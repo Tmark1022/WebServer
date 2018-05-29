@@ -5,10 +5,10 @@
 # module	: Manage
 #===================================================
 from App import CreateApp
-
+from flask_script import Manager
 
 app = CreateApp("debug")
-
+manager = Manager(app)
 
 if __name__ == '__main__':
-	app.run(host="0.0.0.0")
+	manager.run()
