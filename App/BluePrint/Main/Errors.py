@@ -5,12 +5,12 @@
 # module	: App.BluePrint.Main.Errors
 #===================================================
 from App.BluePrint.Main import main
+from flask import render_template
 
 @main.app_errorhandler(404)
 def ErrorHandler404(e):
-	return "404 not found.", 404
-
+	return render_template("404.html")
 
 @main.app_errorhandler(500)
 def ErrorHandler500(e):
-	return "internal server error.", 500
+	return render_template("500.html")
