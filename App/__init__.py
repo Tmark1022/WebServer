@@ -8,15 +8,22 @@ from flask import Flask
 from Config import ConfigDict
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+from flask_sqlalchemy import SQLAlchemy
 
+
+def PrintConfig(config_obj):
+	print "----------------Config Info-----------------------------"
+	for aa in dir(config_obj):
+		if aa.isupper():
+			print "%s:%s" % (aa, getattr(config_obj, aa))
+	print "----------------Config end-----------------------------"
 
 #====================================================
 # flask拓展实例化
 #====================================================
 bootstrap = Bootstrap()
 moment = Moment()
-
-
+db = SQLAlchemy()
 
 def CreateApp(config_name):
 	'''
@@ -24,15 +31,16 @@ def CreateApp(config_name):
 	@param config_name:
 	'''
 	config_obj = ConfigDict[config_name]
+	PrintConfig(config_obj)
+	
 	app = Flask(__name__)
 	app.config.from_object(config_obj)
 	config_obj.init_app(app)
 	
-	
-	
 	# 拓展初始化
 	bootstrap.init_app(app)
 	moment.init_app(app)
+	db.init_app(app)
 	
 	# 主蓝图加载
 	from App.BluePrint.Main import main
@@ -43,3 +51,4 @@ def CreateApp(config_name):
 	app.register_blueprint(gameRoute)
 	
 	return app
+	

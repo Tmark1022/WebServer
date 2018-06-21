@@ -8,7 +8,7 @@ from App.BluePrint.Main import main
 from flask import redirect, url_for, render_template, flash
 from flask import current_app, g, request, session
 
-from App.Form import RegisterForm
+from App.BluePrint.Main.Form import RegisterForm
 
 @main.route("/")
 def Index():
