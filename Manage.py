@@ -22,7 +22,7 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 
 #====================================================
-# 拓展flask_script命令
+# 拓展flask_script
 #====================================================
 @manager.command
 def Info():
@@ -31,7 +31,7 @@ def Info():
 
 # 创建shell上下文
 def make_shell_context():
-	return dict(app=app, db = db, manager=manager, User=Models.User, Theme=Models.Theme)
+	return dict(app=app, db = db, manager=manager, User = Models.User)
 
 
 manager.add_command("shell", Shell(make_context=make_shell_context))				# 创建一个新的shell来替代系统自带的flask_script shell
@@ -39,5 +39,5 @@ manager.add_command("db", MigrateCommand)											# 数据库迁移命令
 
 
 if __name__ == '__main__':
-	manager.run()
-	# app.run(debug=True, host="0.0.0.0")
+	#manager.run()
+	app.run(host="0.0.0.0")

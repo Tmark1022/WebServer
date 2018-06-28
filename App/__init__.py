@@ -9,6 +9,8 @@ from Config import ConfigDict
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+
 
 
 def PrintConfig(config_obj):
@@ -24,6 +26,11 @@ def PrintConfig(config_obj):
 bootstrap = Bootstrap()
 moment = Moment()
 db = SQLAlchemy()
+login_manager = LoginManager()
+login_manager.session_protection = "strong"
+login_manager.login_view = "auth.Login"
+
+
 
 def CreateApp(config_name):
 	'''
@@ -41,6 +48,7 @@ def CreateApp(config_name):
 	bootstrap.init_app(app)
 	moment.init_app(app)
 	db.init_app(app)
+	login_manager.init_app(app)
 	
 	# 主蓝图加载
 	from App.BluePrint.Main import main
@@ -49,6 +57,11 @@ def CreateApp(config_name):
 	# 游戏后台蓝图加载
 	from App.BluePrint.GameRoute import gameRoute
 	app.register_blueprint(gameRoute)
+	
+	# 用户验证蓝图
+	from App.BluePrint.Auth import auth
+	app.register_blueprint(auth, url_prefix = "/auth")
+	
 	
 	return app
 	
