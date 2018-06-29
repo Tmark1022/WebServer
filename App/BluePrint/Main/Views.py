@@ -16,9 +16,6 @@ def Index():
 
 @main.route("/<name>")
 def Greeting(name):
-	print current_app.name, g, request, session
-	print "hello world"
-	print current_app.url_map
 	return render_template("greet.html", aaaa = "tmark")
 
 @main.route("/form/test1", methods = ['GET'])

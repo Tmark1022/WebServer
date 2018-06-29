@@ -65,11 +65,14 @@
 						<span class="glyphicon glyphicon-user"></span><b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="#">个人中心</a></li>
-						<li><a href="#">登录</a></li>
+						<li><a href={{url_for("auth.UserInfo")}}>个人中心</a></li>
 						<li><a href="#">注册</a></li>
 						<li class="divider"></li>
-						<li><a href="#">退出登录</a></li>
+						{% if current_user.is_authenticated %}
+							<li><a href={{url_for("auth.Logout")}}>退出登录</a></li>
+						{% else %}
+							<li><a href={{url_for("auth.Login")}}>登录</a></li>
+						{% endif %}
 					</ul>
 				</li>
 			</ul>

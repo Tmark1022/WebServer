@@ -7,11 +7,9 @@
 from App.BluePrint.Auth import auth
 from flask import redirect, url_for, render_template, flash
 from flask import current_app, g, request, session
-from flask_login import login_required, login_user
+from flask_login import login_required, login_user, logout_user
 from App.BluePrint.Auth.Form import LoginForm
 from App.Models import User
-
-
 
 
 @auth.route("/login", methods = ["GET", "POST"])
@@ -27,9 +25,11 @@ def Login():
 
 @auth.route("/logout")
 def Logout():
-	return "logout"
+	logout_user()
+	flash("退出登录成功")
+	return redirect(url_for("main.Index"))
 
 @auth.route("/user/info")
 @login_required
 def UserInfo():
-	return "just login user can visit"
+	return "个人中心"
