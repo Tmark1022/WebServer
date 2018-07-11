@@ -66,7 +66,7 @@
 					</a>
 					<ul class="dropdown-menu">
 						<li><a href={{url_for("auth.UserInfo")}}>个人中心</a></li>
-						<li><a href="#">注册</a></li>
+						<li><a href={{url_for("auth.Register")}}>注册</a></li>
 						<li class="divider"></li>
 						{% if current_user.is_authenticated %}
 							<li><a href={{url_for("auth.Logout")}}>退出登录</a></li>

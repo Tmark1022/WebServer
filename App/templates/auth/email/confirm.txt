@@ -1,0 +1,5 @@
+Dear mama,
+	Welcome to Flasky!
+	To confirm your account to complete the register progress, please click on the following link:{{ url_for('main.Index', _external=True)}}
+Sincerely,
+Your friend Tmark
