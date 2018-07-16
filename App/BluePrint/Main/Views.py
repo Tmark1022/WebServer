@@ -10,6 +10,7 @@ from flask import current_app, g, request, session
 
 from App.BluePrint.Main.Form import RegisterForm
 
+
 @main.route("/")
 def Index():
 	return render_template("index.html")

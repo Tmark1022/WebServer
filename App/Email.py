@@ -18,7 +18,7 @@ def SyncSendMsg(app, msg):
 def SendMessage(subject, to, template, **kwargs):
 	from Manage import app
 	msg = Message(subject, to, sender=app.config["MAIL_SENDER"]);
-	
+
 	msg.body = render_template(template + ".txt", **kwargs)
 	msg.html = render_template(template + ".html", **kwargs)
 	

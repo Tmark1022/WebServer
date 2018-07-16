@@ -1,5 +1,5 @@
-<p>Dear mama,</p>
+<p>Dear {{user.user_name}}</p>
 <p>&nbsp;&nbsp;Welcome to Flasky!</p>
-<p>&nbsp;&nbsp;To confirm your account to complete the register progress, please click on the following link:<a>{{ url_for('main.Index', _external=True)}}</a></p>
+<p>&nbsp;&nbsp;To confirm your account to complete the register progress, please click on the following link:<a href="{{ url_for('auth.Confirm', token = token, _external=True)}}">{{ url_for('auth.Confirm', token = token, _external=True)}}</a></p>
 <p>Sincerely,</p>
 <p>Your friend Tmark</p>
