@@ -8,8 +8,8 @@ from App.BluePrint.Auth import auth
 from flask import redirect, url_for, render_template, flash
 from flask import current_app, g, request, session
 from flask_login import login_required, login_user, logout_user, current_user
-from App.BluePrint.Auth.Form import LoginForm, RegisterForm
-from App.Models import User
+from App.BluePrint.Auth.Form import LoginForm, RegisterForm, ChangePasswordForm, InputEmailForm
+from App.Models import User, GetTokenData
 from App.Email import SendMessage
 from App import db
 
@@ -80,4 +80,41 @@ def ResendEmail():
 	SendMessage("Register Confirm", [current_user.email,], "auth/email/confirm", user = current_user, token = token)
 	flash("新的注册验证邮件已发送， 请前往邮件验证操作以完成注册")
 	return redirect(url_for("main.Index"))
+
+@auth.route("/password/validate", methods = ["GET", "POST"])
+def ChangePasswordEmail():
+	form  = InputEmailForm()
+	if form.validate_on_submit():
+		user = User.query.filter_by(email = form.email.data).first()
+		if not user:
+			flash("系统异常")
+			return redirect(url_for("main.Index"))
+		token = user.generate_confirmation_token(300)				# 过期时间为5分钟
+		SendMessage("change password email", [form.email.data,], "auth/email/change_password", user = user, token = token)
+		flash("已向注册邮箱发送修改密码邮件, 请尽快前往邮箱接受邮件并完成密码修改")
+		return redirect(url_for("main.Index"))
+	return render_template("normalform.html", form = form)
+
+@auth.route("/password/<token>", methods = ["GET", "POST"])
+def ChangePasswordCommit(token):
+	token_data = GetTokenData(token)
+	if not token_data:
+		flash("修改密码链接不正确或已经过时了， 请重新操作")
+		return redirect(url_for("main.Index"))
+	user_id = token_data.get("confirm")
+	if not user_id:
+		flash("令牌数据异常")
+		return redirect(url_for("main.Index"))
+	
+	form = ChangePasswordForm()
+	if form.validate_on_submit():
+		user = User.query.filter_by(user_id = user_id).first()
+		if not user:
+			flash("系统异常")
+			return redirect(url_for("main.Index"))
+		user.password = form.password.data
+		db.session.add(user)
+		flash("密码修改成功")
+		return redirect(url_for("auth.Login"))
+	return render_template("normalform.html", form = form)
 

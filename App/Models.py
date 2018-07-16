@@ -61,6 +61,10 @@ class User(db.Model):
 		return serializer.dumps({"confirm" : self.user_id})				# 如果user_id自动生成， 那么必须先提交了数据库后才能用这个函数
 	
 	def confirm(self, token):
+		'''
+		注册验证
+		@param token:
+		'''
 		serializer = TimedJSONWebSignatureSerializer(current_app.config["SECRET_KEY"])
 		try:
 			data = serializer.loads(token)
@@ -73,6 +77,17 @@ class User(db.Model):
 		return True
 		
 		
+def GetTokenData(token):
+	'''
+	获取生成的令牌数据
+	@param token:令牌字符串
+	'''
+	serializer = TimedJSONWebSignatureSerializer(current_app.config["SECRET_KEY"])
+	try:
+		data = serializer.loads(token)
+	except:
+		return None
+	return data
 
 # flask_login 当前登录用户current_user加载回调函数, 如果用户没有登录（session传递过来的user_id并不能登录， 就会使用AnonymousUserMixin实例， 这个实例是没有登录的）
 @login_manager.user_loader
