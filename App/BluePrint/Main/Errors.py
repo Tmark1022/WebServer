@@ -14,3 +14,7 @@ def ErrorHandler404(e):
 @main.app_errorhandler(500)
 def ErrorHandler500(e):
 	return render_template("500.html")
+
+@main.app_errorhandler(403)
+def ErrorHandler403(e):
+	return render_template("403.html")

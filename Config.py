@@ -40,12 +40,16 @@ class Config(object):
 	SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or 'sqlite:///' + os.path.join(ConfigBasedir, 'data.sqlite')
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
 	
+	# 邮件
 	MAIL_SERVER = 'smtp.163.com'
 	MAIL_PORT = 465
 	MAIL_USE_SSL = True
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "Ms_mac@163.com"
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "tmac15626476229"
 	MAIL_SENDER = MAIL_USERNAME
+	
+	# 管理员账号
+	FLASK_ADMIN_USER = "779297395@qq.com"
 	
 	@staticmethod
 	def init_app(app):

@@ -46,7 +46,7 @@ def Register():
 		db.session.commit()
 		token = user.generate_confirmation_token()
 		SendMessage("Register Confirm", [form.email.data,], "auth/email/confirm", user = user, token = token)
-		flash("已发送注册验证邮件， 请前往邮件验证操作以完成注册")
+		flash("已发送注册验证邮件， 请前往邮件验证操作以完成注册（注：如果接收不到邮件， 有可能是被当做垃圾邮件了，请接收并设置发送白名单以避免下次系统邮件被当做垃圾邮件)")
 		return redirect(url_for("main.Index"))
 	return render_template("auth/register.html", form = form)
 
