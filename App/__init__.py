@@ -11,7 +11,7 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
-
+from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 
 def PrintConfig(config_obj):
@@ -31,7 +31,7 @@ login_manager = LoginManager()
 login_manager.session_protection = "strong"
 login_manager.login_view = "auth.Login"
 mail = Mail()
-
+header_file = UploadSet("HEADER", IMAGES)
 
 def CreateApp(config_name):
 	'''
@@ -51,6 +51,7 @@ def CreateApp(config_name):
 	db.init_app(app)
 	login_manager.init_app(app)
 	mail.init_app(app)
+	configure_uploads(app, header_file)				# 头像文件
 	
 	# 主蓝图加载
 	from App.BluePrint.Main import main

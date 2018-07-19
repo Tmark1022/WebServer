@@ -48,8 +48,13 @@ class Config(object):
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "tmac15626476229"
 	MAIL_SENDER = MAIL_USERNAME
 	
+	
 	# 管理员账号
 	FLASK_ADMIN_USER = "779297395@qq.com"
+	
+	# 上传文件目录
+	UPLOADED_HEADER_DEST = os.path.join(ConfigBasedir, os.sep.join(["App", "static", "header"]))					# 头像文件存储路径
+	
 	
 	@staticmethod
 	def init_app(app):
@@ -86,3 +91,5 @@ if __name__ == '__main__':
 if __name__ == '__main__':
 	print "Windows:", IsWindows()
 	print "Linux:", IsLinux()
+	
+	print os.path.join(Config.UPLOAD_FOLDER, "memeda.jpg")

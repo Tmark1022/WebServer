@@ -2,9 +2,21 @@
 
 {% block page_content %}
 	<div  class="page-header" >
+		{% if user == current_user %} 
+			<a title="点击修改头像", href={{url_for('main.UploadHeaderFile')}}>
+		{% endif %}
+		{% if user.header_picutre %}
+			<img src={{ header_file.url(user.header_picutre)}} class="img-thumbnail" alt="hello tmark" width="256"  height="256">
+		{% else %}
+			<img src={{ header_file.url('default.jpg')}} class="img-thumbnail" alt="hello tmark" width="256"  height="256">
+		{% endif %}
+		{% if user == current_user %} 
+			</a>
+		{% endif %}
+
 		<h1>{{ user.user_name }}</h1>
 		{% if user.location %}
-			<p>From {{ user.location }}</p>
+			<p>From <a href="http://map.baidu.com/?newmap=1&s=s%26wd%3D{{user.location}}%26c%3D257&from=alamap&tpl=mapcity">{{ user.location }}</a></p>
 		{% endif %}
 
 		{% if current_user.is_administrator() %}
@@ -23,11 +35,17 @@
 			<p><a class="btn btn-default" href="{{ url_for('main.EditProfile') }}">Edit Profile</a></p>
 		{% endif %}
 
+		<!--
 		{% if current_user.is_administrator() %}
 			<p><a class="btn btn-danger" href="{{ url_for('main.EditProfile') }}">Edit Profile</a></p>
 		{% endif %}
+	-->
+	</div>
 
 </div>
+
+
+
 {% endblock %}
 
 

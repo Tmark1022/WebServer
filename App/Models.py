@@ -28,6 +28,7 @@ class User(db.Model):
 	about_me = db.Column(db.Text())
 	register_time = db.Column(db.DateTime(), default = datetime.utcnow)
 	last_login_time = db.Column(db.DateTime(), default = datetime.utcnow)
+	header_picutre = db.Column(db.String(128))
 	
 	def __init__(self, *args, **kwargs):
 		super(User, self).__init__(*args, **kwargs)
