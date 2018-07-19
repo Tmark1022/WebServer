@@ -9,6 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash				# �
 from itsdangerous import TimedJSONWebSignatureSerializer								# 生成具有过期时间的签名
 from flask import current_app
 from flask_login.mixins import AnonymousUserMixin
+from datetime import datetime
 
 #====================================================
 # 数据库表定义
@@ -18,9 +19,15 @@ class User(db.Model):
 	user_id = db.Column(db.Integer, primary_key = True)
 	email = db.Column(db.String(128), nullable = False)
 	password_hash = db.Column(db.String(128), nullable = False)
-	user_name = db.Column(db.String(32), nullable = False)
+	user_name = db.Column(db.String(32), nullable = False, unique = True)
 	confirmed = db.Column(db.Boolean, default = False)
 	role_id = db.Column(db.Integer, db.ForeignKey("roles.role_id"))			# 外键引用
+	
+	# 额外个人信息
+	location = db.Column(db.String(64))
+	about_me = db.Column(db.Text())
+	register_time = db.Column(db.DateTime(), default = datetime.utcnow)
+	last_login_time = db.Column(db.DateTime(), default = datetime.utcnow)
 	
 	def __init__(self, *args, **kwargs):
 		super(User, self).__init__(*args, **kwargs)
@@ -89,6 +96,13 @@ class User(db.Model):
 		db.session.add(self)					# 插入会话， 跟随请求结束保存进数据库
 		return True
 	
+	def ping(self):
+		'''
+		刷新用户访问时间
+		'''
+		self.last_login_time = datetime.utcnow()
+		db.session.add(self)
+		
 	#====================================================
 	# 角色权限验证函数(为了保证current_user不需要确保已经登录的前提下就可以使用权限验证函数， 请为匿名用户类也添加一下方法)
 	#====================================================

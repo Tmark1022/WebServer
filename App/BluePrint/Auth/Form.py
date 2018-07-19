@@ -26,6 +26,11 @@ class RegisterForm(FlaskForm):
 	def validate_email(self, field):
 		if User.query.filter_by(email=field.data).first():
 			raise ValidationError('Email already registered.')
+	
+	# validate_  +  变量名 会制动调用校验函数
+	def validate_user_name(self, field):
+		if User.query.filter_by(user_name=field.data).first():
+			raise ValidationError('User_name already registered.')
 
 class InputEmailForm(FlaskForm):
 	email = StringField("register email", validators = [Required(), Length(1, 64), Email()])

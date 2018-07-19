@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+	<div  class="page-header" >
+		<h1>{{ user.user_name }}</h1>
+		{% if user.location %}
+			<p>From {{ user.location }}</p>
+		{% endif %}
+
+		{% if current_user.is_administrator() %}
+			<p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+		{% endif %}
+
+		{% if user.about_me %}
+			<p>{{ user.about_me }}</p>
+		{% endif %}
+
+		<p>Member since {{ moment(user.register_time).format('L') }}.</p>
+		<p>Last seen {{ moment(user.last_login_time).fromNow(refresh=True) }}.</p>
+
+		<!--当前登录用户可以修改自身的个人信息-->
+		{% if user == current_user %}
+			<p><a class="btn btn-default" href="{{ url_for('main.EditProfile') }}">Edit Profile</a></p>
+		{% endif %}
+
+		{% if current_user.is_administrator() %}
+			<p><a class="btn btn-danger" href="{{ url_for('main.EditProfile') }}">Edit Profile</a></p>
+		{% endif %}
+
+</div>
+{% endblock %}
+
+

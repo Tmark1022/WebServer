@@ -16,9 +16,12 @@ from App import db
 # 定义全局的请求钩子
 @auth.before_app_request
 def before_app_request():
-	if current_user.is_authenticated and not current_user.confirmed and request.endpoint[:5] != 'auth.' and request.endpoint != 'static':
-		# 已经登录且还没有认证， 而且请求不是auth蓝本
-		return redirect(url_for('auth.RemindConfirm'))
+	if current_user.is_authenticated:
+		# 刷新用户最后登录时间
+		current_user.ping()
+		if not current_user.confirmed and request.endpoint[:5] != 'auth.' and request.endpoint != 'static':
+			# 已经登录且还没有认证， 而且请求不是auth蓝本
+			return redirect(url_for('auth.RemindConfirm'))
 
 @auth.route("/login", methods = ["GET", "POST"])
 def Login():
@@ -49,11 +52,6 @@ def Register():
 		flash("已发送注册验证邮件， 请前往邮件验证操作以完成注册（注：如果接收不到邮件， 有可能是被当做垃圾邮件了，请接收并设置发送白名单以避免下次系统邮件被当做垃圾邮件)")
 		return redirect(url_for("main.Index"))
 	return render_template("auth/register.html", form = form)
-
-@auth.route("/user/info")
-@login_required
-def UserInfo():
-	return "个人中心"
 
 @auth.route("/confirm/<token>")
 @login_required

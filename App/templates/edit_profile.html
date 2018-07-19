@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+	<div  class="page-header" >
+		<h1>Edit your Profile</h1> 
+	</div>
+	<!--{{wtf.quick_form(form, url_for("auth.Register"))}} 如果指定提交路径，就会造成当前的请求中?后的参数全不见了-->
+	{{wtf.quick_form(form)}}
+{% endblock %}

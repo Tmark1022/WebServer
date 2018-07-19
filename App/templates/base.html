@@ -18,7 +18,11 @@
 
 {% block title %}Hello Tmark{% endblock %}
 
-
+<!--  引入必须的js文件 -->
+{% block scripts %}
+	{{ super() }}
+	{{ moment.include_moment() }}
+{% endblock %}
 
 
 
@@ -65,7 +69,9 @@
 						<span class="glyphicon glyphicon-user"></span><b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href={{url_for("auth.UserInfo")}}>个人中心</a></li>
+						{% if current_user.is_authenticated %}
+							<li><a href={{url_for("main.UserInfo", username = current_user.user_name)}}>个人中心</a></li>
+						{% endif %}
 						<li><a href={{url_for("auth.Register")}}>注册</a></li>
 						<li class="divider"></li>
 						{% if current_user.is_authenticated %}

@@ -5,13 +5,19 @@
 # 表单模块
 #===============================================================================
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, SubmitField
-from wtforms.validators import Required
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, ValidationError, TextAreaField
+from wtforms.validators import Required, Length, Email, EqualTo
+from App.Models import User
 
+class EditProfileForm(FlaskForm):
+	location = StringField("location", validators = [Length(0, 64)])
+	about_me = TextAreaField("about me")
+	submit = SubmitField("Edit")
 
-class RegisterForm(FlaskForm):
-	user_id = StringField("id:", validators = [Required()])
-	password = PasswordField("password:", validators = [Required()])
-	text_mark = TextAreaField("mark:", validators = [Required()])
-	submit = SubmitField("submit")
+#class EditProfileAdminForm(FlaskForm):
+#	
+#	location = StringField("location", validators = [Length(0, 64)])
+#	about_me = TextAreaField("about me")
+#	submit = SubmitField("Edit")
+
 
