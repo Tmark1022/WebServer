@@ -30,6 +30,9 @@ class User(db.Model):
 	last_login_time = db.Column(db.DateTime(), default = datetime.utcnow)
 	header_picutre = db.Column(db.String(128))
 	
+	# 博客文章
+	posts = db.relationship("Post", backref = "author", lazy = "dynamic")
+	
 	def __init__(self, *args, **kwargs):
 		super(User, self).__init__(*args, **kwargs)
 		
@@ -146,6 +149,21 @@ class Role(db.Model):
 			role.default = role_permissions_dict[role_name][1]
 			db.session.add(role)
 		db.session.commit()
+
+# 文章模型
+class Post(db.Model):
+	__tablename__ = 'posts'
+	post_id = db.Column(db.Integer, primary_key=True)
+	body = db.Column(db.Text)
+	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+	author_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+
+	def __str__(self):
+		return "<table posts %s>" % (self.post_id)
+	
+	__repr__ = __str__
+
+
 
 #====================================================
 # 其他

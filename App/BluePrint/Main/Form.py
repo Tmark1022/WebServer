@@ -21,12 +21,13 @@ class UploadFileForm(FlaskForm):
 	submit = SubmitField("uploads")
 
 
-
-
 #class EditProfileAdminForm(FlaskForm):
 #	
 #	location = StringField("location", validators = [Length(0, 64)])
 #	about_me = TextAreaField("about me")
 #	submit = SubmitField("Edit")
 
+class PostForm(FlaskForm):
+	body = TextAreaField("What's on your mind?", validators=[Required()])
+	submit = SubmitField('Submit')
 

@@ -1,8 +1,11 @@
 {% extends "base.html" %}
-
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-	{% for aa in range(100) %}
-		<p>this is line {{ aa }}</p>
-	{% endfor %}
+<div>
+	{% if current_user.can(Permission.WRITE_ARTICLES) %}
+		{{ wtf.quick_form(form) }}
+	{% endif %}
+</div>
+{% include '_post.html' %}
 {% endblock %}

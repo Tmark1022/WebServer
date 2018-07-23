@@ -32,7 +32,7 @@ def Login():
 			login_user(user, form.remember_me.data)
 			return redirect(request.args.get("next") or url_for("main.Index"))
 		flash("账号有误")
-	return render_template("auth/login.html", form = form)
+	return render_template("normalform.html", form = form, header_text = "Login")
 
 @auth.route("/logout")
 def Logout():
@@ -51,11 +51,22 @@ def Register():
 		SendMessage("Register Confirm", [form.email.data,], "auth/email/confirm", user = user, token = token)
 		flash("已发送注册验证邮件， 请前往邮件验证操作以完成注册（注：如果接收不到邮件， 有可能是被当做垃圾邮件了，请接收并设置发送白名单以避免下次系统邮件被当做垃圾邮件)")
 		return redirect(url_for("main.Index"))
-	return render_template("auth/register.html", form = form)
+	return render_template("normalform.html", form = form, header_text = "Register")
 
 @auth.route("/confirm/<token>")
 @login_required
 def Confirm(token):
+	token_data = GetTokenData(token)
+	if not token_data or not token_data.get("confirm"):
+		flash("this confirmation link is valid or has expired.")
+		return redirect(url_for("main.Index"))
+	
+	# 当前登录用户不是令牌对应的用户
+	token_user_id = token_data.get("confirm")
+	if current_user.user_id != token_user_id:
+		flash("请登录新注册的账户后再次点击邮件验证链接以完成注册验证.")
+		return redirect(url_for("auth.Login"))
+	
 	if not current_user.confirmed:
 		# 没有验证
 		if current_user.confirm(token):
@@ -91,7 +102,7 @@ def ChangePasswordEmail():
 		SendMessage("change password email", [form.email.data,], "auth/email/change_password", user = user, token = token)
 		flash("已向注册邮箱发送修改密码邮件, 请尽快前往邮箱接受邮件并完成密码修改")
 		return redirect(url_for("main.Index"))
-	return render_template("normalform.html", form = form)
+	return render_template("normalform.html", form = form, header_text = "Reset Password")
 
 @auth.route("/password/<token>", methods = ["GET", "POST"])
 def ChangePasswordCommit(token):
@@ -114,5 +125,5 @@ def ChangePasswordCommit(token):
 		db.session.add(user)
 		flash("密码修改成功")
 		return redirect(url_for("auth.Login"))
-	return render_template("normalform.html", form = form)
+	return render_template("normalform.html", form = form, header_text = "Reset Password")
 

@@ -1,0 +1,25 @@
+<ul class="posts">
+	{% for post in posts %}
+		<li class="post">
+			<div class="post-thumbnail">
+				<a href="{{ url_for('main.UserInfo', username=post.author.user_name) }}">
+					{% if post.author.header_picutre %}
+						<img src={{ header_file.url(post.author.header_picutre)}} class="img-rounded profile-thumbnail" alt="hello tmark" width="40"  height="40">
+					{% else %}
+						<img src={{ header_file.url('default.jpg')}} class="img-rounded profile-thumbnail" alt="hello tmark" width="40"  height="40">
+					{% endif %}
+				</a>
+			</div>
+
+			<div class="post-content">
+				<div class="post-date">{{ moment(post.timestamp).fromNow() }}</div>
+				<div class="post-author">
+					<a href="{{ url_for('main.UserInfo', username=post.author.user_name) }}">
+						{{ post.author.user_name }}
+					</a>
+				</div>
+				<div class="post-body">{{ post.body }}</div>
+			</div>
+		</li>
+	{% endfor %}
+</ul>
