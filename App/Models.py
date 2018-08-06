@@ -16,6 +16,18 @@ import bleach
 #====================================================
 # 数据库表定义
 #====================================================
+# 关注者关联表
+class Follow(db.Model):
+	__tablename__ = 'follows'
+	follower_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True)
+	followed_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True)
+	timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+	
+	def __str__(self):
+		return "<table Follow %s>" % (self.follower_id)
+	
+	__repr__ = __str__
+
 class User(db.Model):
 	__tablename__ = 'users'
 	user_id = db.Column(db.Integer, primary_key = True)
@@ -34,6 +46,10 @@ class User(db.Model):
 	
 	# 博客文章
 	posts = db.relationship("Post", backref = "author", lazy = "dynamic")
+	
+	# 关注者(设置lazy=joined是有讲究的， 可以减少反向引用的数据库查询操作)
+	followed = db.relationship('Follow', foreign_keys=[Follow.follower_id], backref=db.backref('follower', lazy='joined'), lazy='dynamic', cascade='all, delete-orphan')		# 我关注的用户
+	followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], backref=db.backref('followed', lazy='joined'), lazy='dynamic', cascade='all, delete-orphan')		# 关注我的用户
 	
 	def __init__(self, *args, **kwargs):
 		super(User, self).__init__(*args, **kwargs)
@@ -139,6 +155,40 @@ class User(db.Model):
 	def is_administrator(self):
 		return self.can(Permission.ADMINISTER)
 	
+	#====================================================
+	# 用户关注操作
+	#====================================================
+	def follow(self, user):
+		'''
+		关注操作
+		@param user:
+		'''
+		if not self.is_following(user):
+			f = Follow(follower=self, followed=user)
+			db.session.add(f)
+
+	def unfollow(self, user):
+		'''
+		取消关注操作
+		@param user:
+		'''
+		f = self.followed.filter_by(followed_id=user.id).first()
+		if f:
+			db.session.delete(f)
+	
+	def is_following(self, user):
+		'''
+		是否关注了某个用户
+		@param user:
+		'''
+		return self.followed.filter_by(followed_id=user.id).first() is not None
+
+	def is_followed_by(self, user):
+		'''
+		是否被某个用户关注
+		@param user:
+		'''
+		return self.followers.filter_by(follower_id=user.id).first() is not None
 
 class Role(db.Model):
 	__tablename__ = 'roles'
@@ -214,10 +264,11 @@ class Post(db.Model):
 						}
 		clean_html = bleach.clean(markdown(value, output_format='html'), tags=allowed_tags, attributes= allowed_attributes)
 		target.body_html = bleach.linkify(clean_html)
-		
+
 # 注册数据库相应函数(post.body内容被设置的时候触发)
 db.event.listen(Post.body, 'set', Post.on_changed_body)
-	
+
+
 #====================================================
 # 其他
 #====================================================

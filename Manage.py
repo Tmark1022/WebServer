@@ -13,8 +13,6 @@ if sys.getdefaultencoding() != default_encoding:
 from App import CreateApp, db
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
-
-
 from App import Models				# 一定需要在这里导入数据库表的定义模块， 不然migrate会检测不到，然后就认为你手动删除了
 
 app = CreateApp("debug")
@@ -31,7 +29,7 @@ def Info():
 
 # 创建shell上下文
 def make_shell_context():
-	return dict(app=app, db = db, manager=manager, User = Models.User, Role = Models.Role, Post = Models.Post)
+	return dict(app=app, db = db, manager=manager, User = Models.User, Role = Models.Role, Post = Models.Post, Follow = Models.Follow)
 
 
 manager.add_command("shell", Shell(make_context=make_shell_context))				# 创建一个新的shell来替代系统自带的flask_script shell
@@ -39,5 +37,5 @@ manager.add_command("db", MigrateCommand)											# 数据库迁移命令
 
 
 if __name__ == '__main__':
-	# manager.run()
-	app.run(debug=False, host="0.0.0.0")
+	manager.run()
+	# app.run(debug=False, host="0.0.0.0")
