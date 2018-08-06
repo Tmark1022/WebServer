@@ -31,7 +31,7 @@ def Info():
 
 # 创建shell上下文
 def make_shell_context():
-	return dict(app=app, db = db, manager=manager, User = Models.User, Role = Models.Role)
+	return dict(app=app, db = db, manager=manager, User = Models.User, Role = Models.Role, Post = Models.Post)
 
 
 manager.add_command("shell", Shell(make_context=make_shell_context))				# 创建一个新的shell来替代系统自带的flask_script shell

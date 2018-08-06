@@ -48,13 +48,14 @@ class Config(object):
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "tmac15626476229"
 	MAIL_SENDER = MAIL_USERNAME
 	
-	
 	# 管理员账号
 	FLASK_ADMIN_USER = "779297395@qq.com"
 	
 	# 上传文件目录
 	UPLOADED_HEADER_DEST = os.path.join(ConfigBasedir, os.sep.join(["App", "static", "header"]))					# 头像文件存储路径
 	
+	# 每页显示文章数
+	FLASKY_POSTS_PER_PAGE = 12
 	
 	@staticmethod
 	def init_app(app):

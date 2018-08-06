@@ -10,6 +10,8 @@ from itsdangerous import TimedJSONWebSignatureSerializer								# 生成具有�
 from flask import current_app
 from flask_login.mixins import AnonymousUserMixin
 from datetime import datetime
+from markdown import markdown
+import bleach
 
 #====================================================
 # 数据库表定义
@@ -106,7 +108,28 @@ class User(db.Model):
 		'''
 		self.last_login_time = datetime.utcnow()
 		db.session.add(self)
+	
+	@staticmethod
+	def generate_fake(count=100):
+		from sqlalchemy.exc import IntegrityError
+		from random import seed
+		import forgery_py
 		
+		seed()
+		for i in range(count):
+			u = User(email=forgery_py.internet.email_address(),
+					user_name=forgery_py.internet.user_name(True),
+					password=forgery_py.lorem_ipsum.word(),
+					confirmed=True,
+					location=forgery_py.address.city(),
+					about_me=forgery_py.lorem_ipsum.sentence(),
+					last_login_time=forgery_py.date.date(True))
+			db.session.add(u)
+			try:
+				db.session.commit()
+			except IntegrityError:
+				db.session.rollback()
+	
 	#====================================================
 	# 角色权限验证函数(为了保证current_user不需要确保已经登录的前提下就可以使用权限验证函数， 请为匿名用户类也添加一下方法)
 	#====================================================
@@ -157,14 +180,44 @@ class Post(db.Model):
 	body = db.Column(db.Text)
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	author_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-
+	body_html = db.Column(db.Text)				# 富文本内容缓存
+	
 	def __str__(self):
 		return "<table posts %s>" % (self.post_id)
 	
 	__repr__ = __str__
-
-
-
+	
+	@staticmethod
+	def generate_fake(count=100):
+		from random import seed, randint
+		import forgery_py
+		seed()
+		user_count = User.query.count()
+		for i in range(count):
+			u = User.query.offset(randint(0, user_count - 1)).first()
+			p = Post(body=forgery_py.lorem_ipsum.sentences(randint(1, 3)),
+					timestamp=forgery_py.date.date(True),
+					author=u)
+		db.session.add(p)
+		db.session.commit()
+	
+	@staticmethod
+	def on_changed_body(target, value, oldvalue, initiator):
+		allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+					'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+					'h1', 'h2', 'h3', 'p', 'img']
+		allowed_attributes = {
+						'a': ['href', 'title'],
+						'abbr': ['title'],
+						'acronym': ['title'],
+						'img':['src', 'alt']
+						}
+		clean_html = bleach.clean(markdown(value, output_format='html'), tags=allowed_tags, attributes= allowed_attributes)
+		target.body_html = bleach.linkify(clean_html)
+		
+# 注册数据库相应函数(post.body内容被设置的时候触发)
+db.event.listen(Post.body, 'set', Post.on_changed_body)
+	
 #====================================================
 # 其他
 #====================================================

@@ -12,7 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_uploads import UploadSet, configure_uploads, IMAGES
-
+from flask_pagedown import PageDown
 
 def PrintConfig(config_obj):
 	print "----------------Config Info-----------------------------"
@@ -32,6 +32,7 @@ login_manager.session_protection = "strong"
 login_manager.login_view = "auth.Login"
 mail = Mail()
 header_file = UploadSet("HEADER", IMAGES)
+pagedown = PageDown()
 
 def CreateApp(config_name):
 	'''
@@ -52,6 +53,7 @@ def CreateApp(config_name):
 	login_manager.init_app(app)
 	mail.init_app(app)
 	configure_uploads(app, header_file)				# 头像文件
+	pagedown.init_app(app)							# Markdown支持
 	
 	# 主蓝图加载
 	from App.BluePrint.Main import main

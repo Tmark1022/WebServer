@@ -1,6 +1,7 @@
 <ul class="posts">
 	{% for post in posts %}
-		<li class="post">
+		<!-- onclick提供用户点击转移到博客网页 -->
+		<li class="post" onclick="window.location.assign('{{ url_for("main.ShowPost", id=post.post_id)}}')">
 			<div class="post-thumbnail">
 				<a href="{{ url_for('main.UserInfo', username=post.author.user_name) }}">
 					{% if post.author.header_picutre %}
@@ -18,8 +19,28 @@
 						{{ post.author.user_name }}
 					</a>
 				</div>
-				<div class="post-body">{{ post.body }}</div>
+				<div class="post-body">
+				<!-- 有富文本就显示富文本 -->
+				{% if post.body_html %}
+					{{ post.body_html | safe }}
+				{% else %}
+					{{ post.body }}
+				{% endif %}
+				</div>
+
+				<div class="post-footer">
+					{% if current_user == post.author %}
+						<a href="{{ url_for('main.EditPost', id=post.post_id) }}">
+							<span class="label label-primary">Edit</span>
+						</a>
+					{% elif current_user.is_administrator() %}
+						<a href="{{ url_for('main.EditPost', id=post.post_id) }}">
+							<span class="label label-danger">Edit [Admin]</span>
+						</a>
+					{% endif %}
+				</div>
 			</div>
 		</li>
-	{% endfor %}
+		{% endfor %}
 </ul>
+

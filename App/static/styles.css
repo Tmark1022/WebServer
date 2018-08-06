@@ -35,3 +35,7 @@ div.post-content {
 div.post-body{
     word-break:break-all;
 }
+
+div.post-footer{
+    text-align: right;
+}

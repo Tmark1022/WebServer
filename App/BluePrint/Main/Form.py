@@ -10,6 +10,8 @@ from wtforms.validators import Required, Length, Email, EqualTo
 from App.Models import User
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from App import header_file
+from flask_pagedown.fields import PageDownField
+
 
 class EditProfileForm(FlaskForm):
 	location = StringField("location", validators = [Length(0, 64)])
@@ -28,6 +30,6 @@ class UploadFileForm(FlaskForm):
 #	submit = SubmitField("Edit")
 
 class PostForm(FlaskForm):
-	body = TextAreaField("What's on your mind?", validators=[Required()])
+	body = PageDownField("What's on your mind?", validators=[Required()])
 	submit = SubmitField('Submit')
 

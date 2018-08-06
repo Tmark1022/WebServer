@@ -22,8 +22,12 @@ def Index():
 		post = Post(body=form.body.data, author=current_user._get_current_object())
 		db.session.add(post)
 		return redirect(url_for('main.Index'))
-	posts = Post.query.order_by(Post.timestamp.desc()).all()
-	return render_template('index.html', form=form, posts=posts, header_file = header_file)
+	# 当前页(no.)
+	page = request.args.get('page', 1, type=int)
+	pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
+	# 只显示当前页的文章
+	posts = pagination.items
+	return render_template('index.html', form=form, posts=posts, header_file = header_file, pagination=pagination)
 
 @main.route("/test/for_admin", methods = ['GET'])
 @admin_required
@@ -78,4 +82,23 @@ def UploadHeaderFile():
 		return redirect(url_for("main.UserInfo", username = current_user.user_name))
 	return render_template("normalform.html", form = form, header_text = "Modify Header Picture")
 
+@main.route('/post/<int:id>')
+def ShowPost(id):
+	post = Post.query.get_or_404(id)
+	return render_template('post.html', posts=[post], header_file = header_file)
 
+@main.route('/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def EditPost(id):
+	post = Post.query.get_or_404(id)
+	if current_user != post.author and not current_user.can(Permission.ADMINISTER):
+		# 权限不够
+		abort(403)
+	form = PostForm()
+	if form.validate_on_submit():
+		post.body = form.body.data
+		db.session.add(post)
+		flash('文章修改成功')
+		return redirect(url_for('main.ShowPost', id=post.post_id))
+	form.body.data = post.body
+	return render_template('edit_post.html', form=form, header_text = "Edit Post")
