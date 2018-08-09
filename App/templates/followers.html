@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{user.user_name}}{{title}} {% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>{{ user.user_name }}{{ title }} </h1>
+</div>
+<table class="table table-hover followers">
+    <thead><tr><th>User</th><th>Since</th></tr></thead>
+    {% for follow in follows %}
+    <tr>
+        <td>
+            <a href="{{ url_for('main.UserInfo', username = follow.user.user_name) }}">
+                {% if follow.user.header_picutre %}
+                    <img src={{ header_file.url(follow.user.header_picutre)}} class="myweb-img-thumbnail" alt="hello tmark" width="32"  height="32">
+                {% else %}
+                    <img class="myweb-img-thumbnail" src={{ header_file.url('default.jpg')}}  alt="hello tmark" width="32"  height="32">
+                {% endif %}
+                {{ follow.user.user_name }}
+            </a>
+        </td>
+        <td>{{ moment(follow.timestamp).format('L') }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<div style="text-align:center">
+    {{ macros.pagination_widget(pagination, endpoint, username = user.user_name) }}
+</div>
+{% endblock %}

@@ -67,7 +67,17 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						<span class="glyphicon glyphicon-user"></span><b class="caret"></b>
+						{% if current_user.is_authenticated %}
+							{% if current_user.header_picutre %}
+								<img src={{ header_file.url(current_user.header_picutre)}} class="myweb-img-thumbnail" alt="hello tmark" width="24"  height="24">
+							{% else %}
+								<img class="myweb-img-thumbnail" src={{ header_file.url('default.jpg')}}  alt="hello tmark" width="24"  height="24">
+							{% endif %}
+							{{current_user.email}}
+						{% else %}
+							<span class="glyphicon glyphicon-user"></span>
+						{% endif %}
+						<b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
 						{% if current_user.is_authenticated %}

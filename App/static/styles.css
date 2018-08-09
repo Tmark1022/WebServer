@@ -39,3 +39,60 @@ div.post-body{
 div.post-footer{
     text-align: right;
 }
+
+div.post-tabs {
+    margin-top: 16px;
+}
+
+div.post-tabs ul.posts {
+    margin: 0px;
+    border-top: none;
+}
+
+img.myweb-img-thumbnail{
+	display: inline-block;
+	max-width: 100%;
+	height: auto;
+	padding: 0px;
+	line-height: 1.42857143;
+	background-color: #fff;
+	border: 0px solid #ddd;
+	border-radius: 4px;
+	-webkit-transition: all .2s ease-in-out;
+	-o-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+}
+
+div.pagination {
+    width: 100%;
+    text-align: right;
+    padding: 0px;
+    margin: 0px;
+}
+div.flask-pagedown-preview {
+    margin: 10px 0px 10px 0px;
+    border: 1px solid #e0e0e0;
+    padding: 4px;
+}
+div.flask-pagedown-preview h1 {
+    font-size: 140%;
+}
+div.flask-pagedown-preview h2 {
+    font-size: 130%;
+}
+div.flask-pagedown-preview h3 {
+    font-size: 120%;
+}
+.post-body h1 {
+    font-size: 140%;
+}
+.post-body h2 {
+    font-size: 130%;
+}
+.post-body h3 {
+    font-size: 120%;
+}
+.table.followers tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+

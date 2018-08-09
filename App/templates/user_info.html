@@ -29,6 +29,28 @@
 
 		<p>Member since {{ moment(user.register_time).format('L') }}.</p>
 		<p>Last seen {{ moment(user.last_login_time).fromNow(refresh=True) }}.</p>
+		<p>{{ user.posts.count() }} blog posts.</p>
+
+        <p>
+            {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+                {% if not current_user.is_following(user) %}
+                	<a href="{{ url_for('main.Follow', username=user.user_name) }}" class="btn btn-primary">Follow</a>
+                {% else %}
+                	<a href="{{ url_for('main.Unfollow', username=user.user_name) }}" class="btn btn-default">Unfollow</a>
+                {% endif %}
+            {% endif %}
+            <a href="{{ url_for('main.Followers', username=user.user_name) }}">粉丝: <span class="badge">{{ user.followers.count() }}</span></a>
+            
+            <a href="{{ url_for('main.Followed_by', username=user.user_name) }}">他(她)关注的: <span class="badge">{{ user.followed.count() }}</span></a>
+            
+            {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
+            	| <span class="label label-default">Follows you</span>
+            {% endif %}
+        </p>
+
+
+
+
 
 		<!--当前登录用户可以修改自身的个人信息-->
 		{% if user == current_user %}

@@ -54,8 +54,9 @@ class Config(object):
 	# 上传文件目录
 	UPLOADED_HEADER_DEST = os.path.join(ConfigBasedir, os.sep.join(["App", "static", "header"]))					# 头像文件存储路径
 	
-	# 每页显示文章数
+	# 每页显示文章数和每页显示粉丝数量
 	FLASKY_POSTS_PER_PAGE = 12
+	FLASKY_FOLLOWERS_PER_PAGE = 20
 	
 	@staticmethod
 	def init_app(app):

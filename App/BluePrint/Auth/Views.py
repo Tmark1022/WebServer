@@ -11,7 +11,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 from App.BluePrint.Auth.Form import LoginForm, RegisterForm, ChangePasswordForm, InputEmailForm
 from App.Models import User, GetTokenData
 from App.Email import SendMessage
-from App import db
+from App import db, header_file
 
 # 定义全局的请求钩子
 @auth.before_app_request
@@ -32,7 +32,7 @@ def Login():
 			login_user(user, form.remember_me.data)
 			return redirect(request.args.get("next") or url_for("main.Index"))
 		flash("账号有误")
-	return render_template("normalform.html", form = form, header_text = "Login")
+	return render_template("normalform.html", form = form, header_text = "Login", header_file = header_file)
 
 @auth.route("/logout")
 def Logout():
@@ -51,7 +51,7 @@ def Register():
 		SendMessage("Register Confirm", [form.email.data,], "auth/email/confirm", user = user, token = token)
 		flash("已发送注册验证邮件， 请前往邮件验证操作以完成注册（注：如果接收不到邮件， 有可能是被当做垃圾邮件了，请接收并设置发送白名单以避免下次系统邮件被当做垃圾邮件)")
 		return redirect(url_for("main.Index"))
-	return render_template("normalform.html", form = form, header_text = "Register")
+	return render_template("normalform.html", form = form, header_text = "Register", header_file = header_file)
 
 @auth.route("/confirm/<token>")
 @login_required
@@ -80,7 +80,7 @@ def Confirm(token):
 def RemindConfirm():
 	if current_user.confirmed:
 		return redirect(url_for("main.Index"))
-	return render_template("auth/remindconfirm.html")
+	return render_template("auth/remindconfirm.html", header_file = header_file)
 
 @auth.route("/confirm/newemail")
 @login_required
@@ -102,7 +102,7 @@ def ChangePasswordEmail():
 		SendMessage("change password email", [form.email.data,], "auth/email/change_password", user = user, token = token)
 		flash("已向注册邮箱发送修改密码邮件, 请尽快前往邮箱接受邮件并完成密码修改")
 		return redirect(url_for("main.Index"))
-	return render_template("normalform.html", form = form, header_text = "Reset Password")
+	return render_template("normalform.html", form = form, header_text = "Reset Password", header_file = header_file)
 
 @auth.route("/password/<token>", methods = ["GET", "POST"])
 def ChangePasswordCommit(token):
@@ -125,5 +125,5 @@ def ChangePasswordCommit(token):
 		db.session.add(user)
 		flash("密码修改成功")
 		return redirect(url_for("auth.Login"))
-	return render_template("normalform.html", form = form, header_text = "Reset Password")
+	return render_template("normalform.html", form = form, header_text = "Reset Password", header_file = header_file)
 

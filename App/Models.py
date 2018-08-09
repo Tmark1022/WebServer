@@ -172,7 +172,7 @@ class User(db.Model):
 		取消关注操作
 		@param user:
 		'''
-		f = self.followed.filter_by(followed_id=user.id).first()
+		f = self.followed.filter_by(followed_id=user.user_id).first()
 		if f:
 			db.session.delete(f)
 	
@@ -181,15 +181,23 @@ class User(db.Model):
 		是否关注了某个用户
 		@param user:
 		'''
-		return self.followed.filter_by(followed_id=user.id).first() is not None
+		return self.followed.filter_by(followed_id=user.user_id).first() is not None
 
 	def is_followed_by(self, user):
 		'''
 		是否被某个用户关注
 		@param user:
 		'''
-		return self.followers.filter_by(follower_id=user.id).first() is not None
-
+		return self.followers.filter_by(follower_id=user.user_id).first() is not None
+	
+	@property
+	def followed_posts(self):
+		'''
+		获取关注的用户的文章
+		'''
+		return Post.query.join(Follow, Follow.followed_id == Post.author_id).filter(Follow.follower_id == self.user_id)
+	
+	
 class Role(db.Model):
 	__tablename__ = 'roles'
 	role_id = db.Column(db.Integer, primary_key = True)
