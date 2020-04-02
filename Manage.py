@@ -38,4 +38,4 @@ manager.add_command("db", MigrateCommand)											# 数据库迁移命令
 
 if __name__ == '__main__':
 	# manager.run()
-	app.run(debug=False, host="0.0.0.0")
+	app.run(debug=False, host="0.0.0.0", port =4545)
