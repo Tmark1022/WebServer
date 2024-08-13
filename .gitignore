@@ -99,3 +99,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# tmark
+.ycm_extra_conf.py
